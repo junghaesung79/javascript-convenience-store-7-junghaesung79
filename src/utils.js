@@ -47,33 +47,7 @@ export const normalizeProducts = (ps) => {
   return newProducts;
 };
 
-const plusQuantity = (quantity) => {
-  if (quantity === 0) {
-    return '재고 없음 ';
-  }
-  return `${quantity}개 `;
-};
-
-export const printStocks = (products) => {
-  products.forEach((product) => {
-    let sentence = '- ';
-
-    sentence += product.name;
-    sentence += ' ';
-
-    let priceString = product.price.toLocaleString('ko-KR');
-    sentence += priceString;
-    sentence += '원 ';
-
-    sentence += plusQuantity(product.quantity);
-
-    sentence += product.promotion;
-
-    Console.print(sentence);
-  });
-};
-
-export const getOrder = (string) => {
+export const formatOrder = (string) => {
   return string.split(',').map((phrase) => {
     const [name, quantity] = phrase.slice(1, -1).split('-');
     return {
