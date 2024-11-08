@@ -8,15 +8,15 @@ class OutputView {
     Printer.printNewline();
   }
 
-  static printStocks(products) {
-    products.forEach((product) => {
+  static printStocks(stocks) {
+    stocks.forEach((stock) => {
       let sentence = '- ';
-      sentence += product.name;
+      sentence += stock.name;
       sentence += ' ';
-      sentence += format.koreanWon(product.price);
+      sentence += format.koreanWon(stock.price);
       sentence += ' ';
-      sentence += format.quanttityUnit(product.quantity);
-      sentence += product.promotion;
+      sentence += format.quanttityUnit(stock.quantity);
+      sentence += stock.promotion;
 
       Printer.print(sentence);
       Printer.printNewline();
