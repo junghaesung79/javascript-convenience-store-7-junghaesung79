@@ -16,7 +16,7 @@ class OutputView {
       sentence += format.koreanWon(stock.price);
       sentence += ' ';
       sentence += format.quanttityUnit(stock.quantity);
-      sentence += stock.promotion;
+      sentence += stock.promotion.getData().name;
 
       Printer.print(sentence);
       Printer.printNewline();

@@ -7,7 +7,7 @@ class FileSystem {
     return FileSystem.#processFile(file);
   }
 
-  static getPromotionInformation() {
+  static getPromotions() {
     const file = fs.readFileSync(PROMOTIONS_ROUTE, 'utf8');
     return FileSystem.#processFile(file);
   }
