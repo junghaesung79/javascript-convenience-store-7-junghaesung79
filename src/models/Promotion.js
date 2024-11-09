@@ -52,7 +52,11 @@ class Promotion {
   }
 
   getPromotionData() {
-    return { buy: this.#data.buy, get: this.#data.get, set: this.#data.buy + this.#data.get };
+    return {
+      buy: this.#data.buy,
+      get: this.#data.get,
+      sumOfBuyGet: this.#data.buy + this.#data.get,
+    };
   }
 }
 
