@@ -50,6 +50,10 @@ class Promotion {
   getData() {
     return this.#data;
   }
+
+  getPromotionData() {
+    return { buy: this.#data.buy, get: this.#data.get, set: this.#data.buy + this.#data.get };
+  }
 }
 
 export default Promotion;
