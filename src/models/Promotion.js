@@ -47,16 +47,16 @@ class Promotion {
     return this.#data.start_date <= today && this.#data.end_date >= today;
   }
 
-  getData() {
-    return this.#data;
-  }
-
   getPromotionData() {
     return {
       buy: this.#data.buy,
       get: this.#data.get,
       sumOfBuyGet: this.#data.buy + this.#data.get,
     };
+  }
+
+  getName() {
+    return this.#data.name;
   }
 }
 

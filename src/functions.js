@@ -1,5 +1,4 @@
 import { ERROR_MESSAGES } from './cosntants/errorMessages.js';
-import Product from './models/Product.js';
 import Promotion from './models/Promotion.js';
 import { sameNameWith } from './utils/common.js';
 
