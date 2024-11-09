@@ -4,6 +4,7 @@ import FileSystem from './io/FileSystem.js';
 import Promotion from './models/Promotion.js';
 import PurchaseService from './services/PurchaseService.js';
 import { InputView, OutputView } from './view/index.js';
+import Receipt from './models/Receipt.js';
 
 class StoreController {
   constructor() {
@@ -21,9 +22,10 @@ class StoreController {
     const orderString = await InputView.getOrder();
     const orders = formatOrder(orderString);
     const cart = addToCart(orders, products);
-    const receipt = PurchaseService.purchaseCartItems(cart, products);
-    const answer = InputView.askMembership();
-    OutputView.printReceipt(receipt, isMembershiped(answer));
+    const purchasedBundles = PurchaseService.purchaseCartBundles(cart, products);
+    const answer = await InputView.askMembership();
+    const receipt = new Receipt(purchasedBundles, isMembershiped(answer));
+    OutputView.printReceipt(receipt);
   }
 }
 

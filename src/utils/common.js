@@ -5,3 +5,7 @@ export const sameNameWith = (inputName) => {
 export const isValidPeriod = (item) => {
   return item.promotion.isValidPeriod();
 };
+
+export const hasSomething = (fn) => {
+  return (items) => items.some(fn);
+};
