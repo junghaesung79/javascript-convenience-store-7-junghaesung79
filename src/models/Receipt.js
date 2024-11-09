@@ -11,13 +11,15 @@ class Receipt {
   #isMembershiped;
 
   constructor(bundles, isMembershiped) {
-    this.#generateReceipt();
+    this.#bundles = bundles;
+    this.#isMembershiped = isMembershiped;
+
+    return this.#generateReceipt();
   }
 
   #generateReceipt() {
     const items = this.#combineItems(this.#bundles);
     const gifts = this.#combineGifts(this.#bundles);
-
     const totalQuantity = this.#calculateTotalQualtity(items);
     const totalAmount = this.#calculateTotalAmount(items);
     const promotionDiscount = this.#calculatePromotionDiscount(gifts);
@@ -43,7 +45,7 @@ class Receipt {
   #combineItems(bundles) {
     return bundles.map((bundle) => {
       return {
-        name: bundle[0],
+        name: bundle[0].name,
         quantity: bundle.length,
         amount: calculateAmount(bundle),
       };

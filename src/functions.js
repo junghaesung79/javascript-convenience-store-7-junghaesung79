@@ -66,7 +66,7 @@ export const addToCart = (orders, products) => {
   return cart;
 };
 
-export const isMembershiped = async () => {
+export const isMembershiped = (answer) => {
   switch (answer) {
     case 'Y':
       return true;

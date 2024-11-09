@@ -1,4 +1,3 @@
-import { Console } from '@woowacourse/mission-utils';
 import { formatOrder, arrangeStocks, addToCart, getProducts, isMembershiped } from './functions.js';
 import FileSystem from './io/FileSystem.js';
 import Promotion from './models/Promotion.js';
