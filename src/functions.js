@@ -8,7 +8,7 @@ export const arrangeStocks = (stocks) => {
   // 프로모션 속성에 프로모션 객체 적용
   const indexToInsert = [];
 
-  const products = stocks.map(({ name, price, quantity, promotion }, index) => {
+  const arrangedStocks = stocks.map(({ name, price, quantity, promotion }, index) => {
     if (promotion !== 'null' && stocks[index + 1].name !== name) {
       indexToInsert.push(index);
     }
@@ -22,7 +22,7 @@ export const arrangeStocks = (stocks) => {
   });
 
   indexToInsert.reverse().forEach((index) => {
-    products.splice(index + 1, 0, {
+    arrangedStocks.splice(index + 1, 0, {
       name: stocks[index].name,
       price: Number(stocks[index].price),
       quantity: 0,
@@ -30,7 +30,7 @@ export const arrangeStocks = (stocks) => {
     });
   });
 
-  return products;
+  return arrangedStocks;
 };
 
 export const formatOrder = (string) => {
@@ -47,7 +47,8 @@ export const getProducts = (stocks) => {
   return stocks.flatMap((stock) => {
     return Array.from({ length: stock.quantity }, () => {
       delete stock.quantity;
-      return new Product(stock);
+      // return new Product(stock);
+      return stock;
     });
   });
 };
@@ -66,45 +67,69 @@ export const addToCart = (orders, products) => {
   return cart;
 };
 
-export const purchaseCartItems = (cart, products) => {
-  const receipt = cart;
+const 행사적용 = (bundle, setForPromotion) => {
+  const after = [];
+  const 프로모션상품개수 = bundle.filter(({ promotion }) => promotion.isValidPeriod()).length;
+  const 적용세트수 = Math.floor(프로모션상품개수 / setForPromotion) * setForPromotion;
+  for (let i = 0; i < bundle.length; i += 1) {
+    if (i < 적용세트수) {
+      if (i % setForPromotion === 0) {
+        bundle[i].status = 'gifted';
+        after.push(bundle[i]);
+      }
 
-  cart.forEach((bundle) => {
+      bundle[i].status = 'promotion applied';
+      after.push(bundle[i]);
+    }
+
+    bundle[i].status = 'default';
+    after.push(bundle[i]);
+  }
+
+  return after;
+};
+
+export const purchaseCartItems = (cart, products) => {
+  const receipt = cart.flatMap((bundle) => {
     const thisPromotion = bundle[0].promotion;
-    const buyForPromotion = thisPromotion.getData().buy;
-    const getForPromotion = thisPromotion.getData().get;
-    const buyGetSum = buyForPromotion + getForPromotion;
+    const { buyForPromotion, getForPromotion, setForPromotion } = thisPromotion.getPromotionData();
 
     if (
-      !bundle[0].promotion.isValidPeriod() ||
-      (bundle[bundle.length - 1].promotion.isValidPeriod() && bundle.length % buyGetSum === 0)
+      // 행사 중인 거 없을 때 결제
+      !bundle[0].promotion.isValidPeriod()
     ) {
-      return;
+      bundle.map((item) => {
+        item.status = 'default';
+        return item;
+      });
     }
 
     if (
-      bundle.length % buyGetSum === buyForPromotion &&
+      //  나누어 떨어질 때 결제
+      bundle[bundle.length - 1].promotion.isValidPeriod() &&
+      bundle.length % setForPromotion === 0
+    ) {
+      행사적용(bundle, setForPromotion);
+    }
+
+    if (
+      // 증정에 필요한 만큼 샀고, 재고에 행사중인 상품이 있을 때 추가 여부 물음
+      bundle.length % setForPromotion === buyForPromotion &&
       products.filter(sameNameWith(bundle[0].name)).some((e) => e.promotion.isValidPeriod())
     ) {
-      // 추가 여부 물음
       bundle.unshift(products.splice(products.findIndex(sameNameWith(bundle[0].name)), 1));
     }
 
-    if (!bundle[bundle.length - 1].promotion.isValidPeriod()) {
-      // 제외 여부 물음
-      const 프로모션상품개수 = bundle.reduce(
-        (acc, { promotion }) => acc + Number(promotion.isValidPeriod()),
-        1,
-      );
+    // 이외 경우 제외 여부 물음
+    const 프로모션상품개수 = bundle.filter(({ promotion }) => promotion.isValidPeriod()).length;
 
-      const 미적용상품개수 = bundle.length - Math.floor(프로모션상품개수 / buyGetSum) * buyGetSum;
-      products.push(bundle.splice(bundle.length - 미적용상품개수, 미적용상품개수));
-      return;
-    }
+    const 적용상품개수 = Math.floor(프로모션상품개수 / setForPromotion) * setForPromotion;
+    const 미적용상품개수 = bundle.length - 적용상품개수;
+    products.push(bundle.splice(bundle.length - 미적용상품개수, 미적용상품개수));
+    행사적용(bundle, setForPromotion);
+
+    return;
   });
-
-  // 증정 적용
-  // 영수증 생성
 
   return receipt;
 };
