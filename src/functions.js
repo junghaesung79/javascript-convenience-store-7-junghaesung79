@@ -71,9 +71,27 @@ export const purchaseCartItems = (cart, products) => {
 
   cart.forEach((bundle) => {
     const thisPromotion = bundle[0].promotion;
-    const buyGetSum = thisPromotion.getData().buy + thisPromotion.getData().get;
+    const buyForPromotion = thisPromotion.getData().buy;
+    const getForPromotion = thisPromotion.getData().get;
+    const buyGetSum = buyForPromotion + getForPromotion;
 
-    if (thisPromotion.isValidPeriod()) {
+    if (
+      !bundle[0].promotion.isValidPeriod() ||
+      (bundle[bundle.length - 1].promotion.isValidPeriod() && bundle.length % buyGetSum === 0)
+    ) {
+      return;
+    }
+
+    if (
+      bundle.length % buyGetSum === buyForPromotion &&
+      products.filter(sameNameWith(bundle[0].name)).some((e) => e.promotion.isValidPeriod())
+    ) {
+      // 추가 여부 물음
+      bundle.unshift(products.splice(products.findIndex(sameNameWith(bundle[0].name)), 1));
+    }
+
+    if (!bundle[bundle.length - 1].promotion.isValidPeriod()) {
+      // 제외 여부 물음
       const 프로모션상품개수 = bundle.reduce(
         (acc, { promotion }) => acc + Number(promotion.isValidPeriod()),
         1,
@@ -85,8 +103,6 @@ export const purchaseCartItems = (cart, products) => {
     }
   });
 
-  // 상품 제외
-  // 상품 추가
   // 증정 적용
   // 영수증 생성
 
