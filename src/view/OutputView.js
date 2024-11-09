@@ -23,38 +23,60 @@ class OutputView {
     });
   }
 
-  static printReceipt(basket) {
+  static printReceipt(receipt) {
     Printer.printStoreBar();
     Printer.print('상품명\t\t수량\t금액');
 
-    basket.forEach((item) => {
+    receipt.forEach((bundle) => {
+      const item = bundle[0];
       let sentence = '';
 
       sentence += item.name;
       sentence += '\t\t';
 
-      sentence += item.quantity.toString();
+      sentence += bundle.length;
       sentence += '\t';
 
-      sentence += item.amount.toLocaleString('ko-KR');
+      sentence += (item.price * bundle.length).toLocaleString('ko-KR');
 
       Printer.print(sentence);
     });
 
-    Printer.printBar;
+    Printer.printBar();
 
-    let sentence = '총구매액\t';
-    sentence += basket.reduce((acc, cur) => acc + cur.quantity, 0).toString();
+    const totalAmount = receipt.reduce((acc, bundle) => acc + bundle.length * bundle[0].price, 0);
+
+    const promotionDiscount = receipt.reduce((acc, bundle) => {
+      const a = bundle
+        .filter(({ status }) => status === 'gifted')
+        .reduce((ac, { price }) => acc + price, 0);
+      return acc + a;
+    }, 0);
+
+    const membershipDiscount =
+      receipt.reduce((acc, bundle) => {
+        const a = bundle
+          .filter(({ status }) => status === 'default')
+          .reduce((ac, { price }) => ac + price, 0);
+        return acc + a;
+      }, 0) * 0.3;
+
+    let sentence = '총구매액\t\t';
+    sentence += receipt.reduce((acc, bundle) => acc + bundle.length, 0).toString();
     sentence += '\t';
-    sentence += basket.reduce((acc, cur) => acc + cur.amount, 0).toLocaleString('ko-KR');
+    sentence += totalAmount.toLocaleString('ko-KR');
+    Printer.print(sentence);
+
+    sentence = '행사할인\t\t\t-';
+    sentence += promotionDiscount.toLocaleString('ko-KR');
     Printer.print(sentence);
 
     sentence = '멤버십할인\t\t\t-';
-    sentence += (basket.reduce((acc, cur) => acc + cur.amount, 0) * 0.3).toLocaleString('ko-KR');
+    sentence += membershipDiscount.toLocaleString('ko-KR');
     Printer.print(sentence);
 
     sentence = '내실돈\t\t\t';
-    sentence += basket.reduce((acc, cur) => acc + cur.amount, 0).toLocaleString('ko-KR');
+    sentence += (totalAmount - promotionDiscount - membershipDiscount).toLocaleString('ko-KR');
     Printer.print(sentence);
   }
 }

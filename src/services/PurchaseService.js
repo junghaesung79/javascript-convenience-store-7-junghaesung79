@@ -1,5 +1,5 @@
 import Shelves from '../models/Shelves.js';
-import { isValidPeriod, sameNameWith } from '../utils/common.js';
+import { isValidPeriod } from '../utils/common.js';
 
 class PurchaseService {
   constructor() {
@@ -7,12 +7,12 @@ class PurchaseService {
   }
 
   static purchaseCartItems(cart) {
-    const receipt = cart.flatMap((bundle) => {
+    const receipt = cart.map((bundle) => {
       const thisPromotion = bundle[0].promotion;
       const { buy: 몇개사면, sumOfBuyGet: 행사묶음물건수 } = thisPromotion.getPromotionData();
 
       if (this.#행사중인물건이없을때(bundle)) {
-        return this.#행사적용(bundle, 행사묶음물건수)();
+        return this.#행사적용(bundle, 행사묶음물건수);
       }
 
       if (this.#나누어떨어질때(bundle, 행사묶음물건수)) {
@@ -58,7 +58,7 @@ class PurchaseService {
   }
 
   static #행사중인물건이없을때(items) {
-    return items.any((item) => isValidPeriod(item));
+    return !items.some((item) => isValidPeriod(item));
   }
 
   static #나누어떨어질때(bundle, 행사묶음물건수) {
