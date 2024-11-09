@@ -1,5 +1,5 @@
 export const sameNameWith = (inputName) => {
-  return (product) => product.name === inputName;
+  return (item) => item.name === inputName;
 };
 
 export const isValidPeriod = (item) => {
@@ -8,4 +8,16 @@ export const isValidPeriod = (item) => {
 
 export const hasSomething = (fn) => {
   return (items) => items.some(fn);
+};
+
+export const calculateAmount = (items) => {
+  return items[0].price * items.length;
+};
+
+export const hasOwnStatus = (status) => {
+  return (item) => item.status === status;
+};
+
+export const sumOfProperty = (property) => {
+  return (acc, cur) => acc + cur[property];
 };
