@@ -1,6 +1,7 @@
-import { ERROR_MESSAGES } from './cosntants/errorMessages.js';
+import * as ERROR_MESSAGES from './cosntants/errorMessages.js';
 import Promotion from './models/Promotion.js';
 import { sameNameWith } from './utils/common.js';
+import { throwError } from './utils/validate.js';
 
 export const arrangeStocks = (stocks) => {
   // 프로모션 재고가 있는데 일반 재고가 없는 경우 일반 재고 0개로 추가
@@ -46,7 +47,7 @@ export const addToCart = (orders, products) => {
   const cart = orders.map(({ name, quantity }) => {
     const bundle = products.filter(sameNameWith(name));
 
-    if (bundle.length < quantity) throw new Error(ERROR_MESSAGES.overStock);
+    if (bundle.length < quantity) throwError(ERROR_MESSAGES.orders.overStock);
 
     if (!bundle[0].promotion.isValidPeriod()) bundle.reverse(); // 프로모션 기간이 아닌 경우 일반 재고를 먼저 사용합니다.
 

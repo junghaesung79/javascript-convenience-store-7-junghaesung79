@@ -1,9 +1,14 @@
 import { MESSAGES } from '../cosntants/messages.js';
 import Reader from '../io/Reader.js';
+import OrderHandler from '../services/OrderHandler.js';
+import { tryAgainUntilValid as retryUntilValid } from '../utils/validate.js';
 
 class InputView {
   static async getOrder() {
-    return await Reader.readLine(MESSAGES.getOrder);
+    return retryUntilValid(async () => {
+      const orderString = await Reader.readLine(MESSAGES.getOrder);
+      return OrderHandler.format(orderString);
+    });
   }
 
   static async askMembership() {

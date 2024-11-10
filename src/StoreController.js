@@ -4,7 +4,6 @@ import Promotion from './models/Promotion.js';
 import PurchaseService from './services/PurchaseService.js';
 import { InputView, OutputView } from './view/index.js';
 import Receipt from './models/Receipt.js';
-import OrderHandler from './services/OrderHandler.js';
 
 class StoreController {
   constructor() {
@@ -19,8 +18,7 @@ class StoreController {
     OutputView.printStocks(arrangedStocks);
 
     const products = getProducts(arrangedStocks);
-    const orderString = await InputView.getOrder();
-    const orders = OrderHandler.format(orderString);
+    const orders = await InputView.getOrder();
 
     const cart = addToCart(orders, products);
     const purchasedBundles = PurchaseService.purchaseCartBundles(cart, products);
