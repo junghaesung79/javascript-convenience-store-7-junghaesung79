@@ -21,7 +21,7 @@ class PurchaseService {
 
       if (this.#더받을수있을때(bundle, 행사묶음물건수, 몇개사면)) {
         // 추가 여부 물음
-        bundle.unshift(Shelves.bringItem(bundle[0].name));
+        bundle.unshift(this.shelves.bringItem(bundle[0].name));
         return this.#행사적용(bundle, 행사묶음물건수);
       }
 
@@ -29,7 +29,7 @@ class PurchaseService {
       const 프로모션상품개수 = bundle.filter(isValidPeriod).length;
       const 적용상품개수 = Math.floor(프로모션상품개수 / 행사묶음물건수) * 행사묶음물건수;
       const 미적용상품개수 = bundle.length - 적용상품개수;
-      Shelves.turnBackItems(bundle.splice(bundle.length - 미적용상품개수, 미적용상품개수));
+      this.shelves.turnBackItems(bundle.splice(bundle.length - 미적용상품개수, 미적용상품개수));
       return this.#행사적용(bundle, 행사묶음물건수);
     });
   }
@@ -65,7 +65,7 @@ class PurchaseService {
 
   static #더받을수있을때(bundle, 행사묶음물건수, 몇개사면) {
     return (
-      bundle.length % 행사묶음물건수 === 몇개사면 && Shelves.hasValidPeriodItem(bundle[0].name)
+      bundle.length % 행사묶음물건수 === 몇개사면 && this.shelves.hasValidPeriodItem(bundle[0].name)
     );
   }
 }

@@ -1,27 +1,26 @@
-import { arrangeStocks, addToCart, getProducts, isMembershiped } from './functions.js';
-import FileSystem from './io/FileSystem.js';
-import Promotion from './models/Promotion.js';
+import { addToCart, isMembershiped } from './functions.js';
 import PurchaseService from './services/PurchaseService.js';
 import { InputView, OutputView } from './view/index.js';
 import Receipt from './models/Receipt.js';
+import Shelves from './models/Shelves.js';
 
 class StoreController {
+  #shelves;
+
   constructor() {
-    Promotion.updatePromotions(FileSystem.getPromotions());
+    this.#shelves = new Shelves();
   }
 
   async run() {
+    const bundles = this.#shelves.getBundles();
+
     OutputView.printIntroduce();
+    OutputView.printStocks(bundles);
 
-    const stocks = FileSystem.getStocks();
-    const arrangedStocks = arrangeStocks(stocks);
-    OutputView.printStocks(arrangedStocks);
-
-    const products = getProducts(arrangedStocks);
     const orders = await InputView.getOrder();
+    const cart = addToCart(orders, bundles);
+    const purchasedBundles = PurchaseService.purchaseCartBundles(cart);
 
-    const cart = addToCart(orders, products);
-    const purchasedBundles = PurchaseService.purchaseCartBundles(cart, products);
     const answer = await InputView.askMembership();
     const receipt = new Receipt(purchasedBundles, isMembershiped(answer));
     OutputView.printReceipt(receipt);
