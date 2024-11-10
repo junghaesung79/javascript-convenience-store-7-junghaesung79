@@ -1,4 +1,3 @@
-import { isMembershiped } from './functions.js';
 import PurchaseService from './services/PurchaseService.js';
 import { InputView, OutputView } from './view/index.js';
 import Receipt from './models/Receipt.js';
@@ -12,6 +11,16 @@ class StoreController {
   }
 
   async run() {
+    while (true) {
+      await this.#useStore();
+
+      const wantsToContinue = await InputView.askToContinue();
+      if (wantsToContinue) continue;
+      break;
+    }
+  }
+
+  async #useStore() {
     this.#synchronizeFromFile();
 
     OutputView.printIntroduce();
@@ -21,7 +30,7 @@ class StoreController {
     const bundles = PurchaseService.purchase(orders);
 
     const answer = await InputView.askMembership();
-    const receipt = new Receipt(bundles, isMembershiped(answer));
+    const receipt = new Receipt(bundles, answer);
     OutputView.printReceipt(receipt);
 
     this.#synchronizeToFile();

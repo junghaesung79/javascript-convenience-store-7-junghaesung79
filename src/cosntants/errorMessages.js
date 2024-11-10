@@ -7,3 +7,5 @@ export const orders = Object.freeze({
 });
 
 export const noInputs = '값을 입력해 주세요.';
+
+export const answerYOrN = 'Y 또는 N으로 답해주세요.';
