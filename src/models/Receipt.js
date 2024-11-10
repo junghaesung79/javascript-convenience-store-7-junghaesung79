@@ -68,11 +68,11 @@ class Receipt {
   }
 
   #calculateTotalAmount(items) {
-    return items.reduce(sumOfProperty('price'), 0);
+    return items.reduce(sumOfProperty('amount'), 0);
   }
 
   #calculatePromotionDiscount(gifts) {
-    return gifts.reduce(sumOfProperty('price'), 0);
+    return gifts.reduce(sumOfProperty('amount'), 0);
   }
 
   #calculateMembershipDiscount(bundles, isMembershiped) {

@@ -1,78 +1,74 @@
+import { MESSAGES, RECEIPT_MESSAGES } from '../cosntants/messages.js';
 import Printer from '../io/Printer.js';
-import * as format from '../utils/format.js';
+import * as format from '../utils/formatters.js';
+import * as unit from '../utils/units.js';
 
 class OutputView {
   static printIntroduce() {
-    Printer.print('안녕하세요. W편의점입니다.');
-    Printer.print('현재 보유하고 있는 상품입니다.');
-    Printer.printNewline();
+    Printer.print(MESSAGES.introduce);
   }
 
   static printStocks(stocks) {
-    stocks.forEach((stock) => {
-      let sentence = '- ';
-      sentence += stock.name;
-      sentence += ' ';
-      sentence += format.koreanWon(stock.price);
-      sentence += ' ';
-      sentence += format.quanttityUnit(stock.quantity);
-      sentence += stock.promotion.getName();
+    const paragraph = stocks.reduce((acc, { name, price, quantity, promotion }) => {
+      const line = format.presentMenu({
+        menuName: name,
+        price: unit.koreanWon(price),
+        quantity: unit.quantity(quantity),
+        promotionName: promotion.getName(),
+      });
 
-      Printer.print(sentence);
-      Printer.printNewline();
-    });
+      return acc + line + '\n';
+    }, '');
+
+    Printer.print(paragraph);
   }
 
   static printReceipt({ items, gifts, calculations }) {
-    Printer.printStoreBar();
-    Printer.print('상품명\t\t수량\t금액');
+    OutputView.#printItemsBlock(items);
+    OutputView.#printGiftsBlock(gifts);
+    OutputView.#printCalculationsBlock(calculations);
+  }
 
-    items.forEach((item) => {
-      let sentence = '';
+  static #printItemsBlock(items) {
+    const itemsBlock = items.reduce((acc, { name, quantity, amount }, index) => {
+      const line = format.receiptMenu({
+        name,
+        quantity: unit.quantity(quantity),
+        amount: unit.koreanWon(amount),
+      });
 
-      sentence += item.name;
-      sentence += '\t\t';
+      if (items.length - 1 === index) return acc + line;
+      return acc + line + '\n';
+    }, '');
+    Printer.print(RECEIPT_MESSAGES.itemsBar);
+    Printer.print(RECEIPT_MESSAGES.categories);
+    Printer.print(itemsBlock);
+  }
 
-      sentence += item.quantity;
-      sentence += '\t';
+  static #printGiftsBlock(gifts) {
+    if (gifts.length === 0) return;
 
-      sentence += item.amount.toLocaleString('ko-KR');
+    const giftsBlock = gifts.reduce((acc, { name, quantity }) => {
+      const line = format.giftMenu({
+        name,
+        quantity: unit.quantity(quantity),
+      });
 
-      Printer.print(sentence);
-    });
+      return acc + line + '\n';
+    }, '');
+    Printer.print(RECEIPT_MESSAGES.giftsBar);
+    Printer.print(giftsBlock);
+  }
 
-    Printer.printGiftBar();
-
-    gifts.forEach((gift) => {
-      let sentence = '';
-
-      sentence += gift.name;
-      sentence += '\t\t';
-
-      sentence += gift.quantity;
-
-      Printer.print(sentence);
-    });
-
-    Printer.printBar();
-
-    let sentence = '총구매액\t\t';
-    sentence += calculations.totalQuantity.toLocaleString('ko-KR');
-    sentence += '\t';
-    sentence += calculations.totalAmount.toLocaleString('ko-KR');
-    Printer.print(sentence);
-
-    sentence = '행사할인\t\t\t-';
-    sentence += calculations.promotionDiscount.toLocaleString('ko-KR');
-    Printer.print(sentence);
-
-    sentence = '멤버십할인\t\t\t-';
-    sentence += calculations.membershipDiscount.toLocaleString('ko-KR');
-    Printer.print(sentence);
-
-    sentence = '내실돈\t\t\t';
-    sentence += calculations.payment.toLocaleString('ko-KR');
-    Printer.print(sentence);
+  static #printCalculationsBlock(calculations) {
+    const values = Object.values(calculations).map((value) => value.toLocaleString('ko-KR'));
+    const totalLine = format.totalLine(...values.slice(0, 2));
+    const promotionLine = format.promotionLine(values[2]);
+    const membershipLine = format.membershipLine(values[3]);
+    const paymentLine = format.paymentLine(values[4]);
+    const calculationsBlock = totalLine + promotionLine + membershipLine + paymentLine;
+    Printer.print(RECEIPT_MESSAGES.calculationsBar);
+    Printer.print(calculationsBlock);
   }
 }
 
