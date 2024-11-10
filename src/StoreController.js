@@ -3,6 +3,7 @@ import PurchaseService from './services/PurchaseService.js';
 import { InputView, OutputView } from './view/index.js';
 import Receipt from './models/Receipt.js';
 import Shelves from './models/Shelves.js';
+import FileSystem from './io/FileSystem.js';
 
 class StoreController {
   constructor() {
@@ -16,6 +17,8 @@ class StoreController {
 
     const orders = await InputView.getOrder();
     const bundles = PurchaseService.purchase(orders);
+
+    FileSystem.writeProducts(Shelves.denormalizeStocks());
 
     const answer = await InputView.askMembership();
     const receipt = new Receipt(bundles, isMembershiped(answer));

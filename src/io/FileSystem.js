@@ -12,9 +12,10 @@ class FileSystem {
     return FileSystem.#processFile(file);
   }
 
-  static writeProducts = (productsFile) => {
+  static writeProducts(rawStocks) {
+    const productsFile = this.#convertToCSV(rawStocks);
     fs.writeFileSync(PRODUCTS_ROUTE, productsFile);
-  };
+  }
 
   static #processFile(file) {
     const splittedFile = file.split('\n');
@@ -26,12 +27,24 @@ class FileSystem {
       return acc;
     }, {});
 
-    return body.map((rawProduct) =>
+    return body.map((stockToken) =>
       Object.keys(template).reduce((obj, key, index) => {
-        obj[key] = rawProduct.split(',')[index];
+        obj[key] = stockToken.split(',')[index];
         return obj;
       }, {}),
     );
+  }
+
+  static #convertToCSV(objects) {
+    if (!objects || objects.length === 0) {
+      throw new Error('데이터가 없습니다.');
+    }
+
+    const headers = Object.keys(objects[0]);
+    const headerRow = headers.join(',');
+    const dataRows = objects.map((obj) => headers.map((header) => obj[header]).join(','));
+
+    return [headerRow, ...dataRows, ''].join('\n');
   }
 }
 

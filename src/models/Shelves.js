@@ -65,14 +65,14 @@ class Shelves {
     return stocksCopy;
   }
 
-  static denormalizeStocks(stocks) {
+  static denormalizeStocks() {
     const toStringPromotion = (promotion) => {
       const name = promotion.getName();
       if (name === '') return 'null';
       return name;
     };
 
-    return stocks.map((stock) => ({
+    return Shelves.#instance.#batches.map((stock) => ({
       name: stock.name,
       price: String(stock.price),
       quantity: String(stock.quantity),
