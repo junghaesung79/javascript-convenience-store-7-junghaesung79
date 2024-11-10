@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { PRODUCTS_ROUTE, PROMOTIONS_ROUTE } from '../cosntants/route';
+import { PRODUCTS_ROUTE, PROMOTIONS_ROUTE } from '../cosntants/route.js';
 
 class FileSystem {
   static getStocks() {

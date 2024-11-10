@@ -1,4 +1,4 @@
-import StoreController from './StoreController';
+import StoreController from './StoreController.js';
 
 class App {
   constructor() {

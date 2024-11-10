@@ -1,4 +1,4 @@
-import { sameNameWith } from '../utils/common';
+import { sameNameWith } from '../utils/common.js';
 
 class Promotion {
   static promotions = [];
