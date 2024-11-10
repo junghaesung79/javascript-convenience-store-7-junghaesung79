@@ -2,7 +2,11 @@ import { sameNameWith } from '../utils/common.js';
 
 class Promotion {
   static #promotions = [];
-  static #INACTIVE_DATES = {
+
+  static #DEFAULT_PROMOTION = {
+    name: '',
+    buy: 0,
+    get: 0,
     startDate: new Date(0),
     endDate: new Date(0),
   };
@@ -10,25 +14,35 @@ class Promotion {
   #data;
 
   constructor(name) {
-    if (name !== 'null') {
-      this.#data = Promotion.getPromotions().find(sameNameWith(name));
-      return;
+    this.#data = this.#initializeData(name);
+  }
+
+  #initializeData(name) {
+    if (name === 'null') {
+      return { ...Promotion.#DEFAULT_PROMOTION };
     }
 
-    this.#data = {
-      name: '',
-      buy: 0,
-      get: 0,
-      startDate: Promotion.#INACTIVE_DATES.startDate,
-      endDate: Promotion.#INACTIVE_DATES.endDate,
-    };
+    const promotion = Promotion.getPromotions().find(sameNameWith(name));
+    if (!promotion) {
+      return { ...Promotion.#DEFAULT_PROMOTION };
+    }
+
+    const today = new Date();
+    if (promotion.startDate <= today && promotion.endDate >= today) {
+      return promotion;
+    }
+
+    promotion.name = '';
+    return promotion;
   }
 
   static updatePromotions(informations) {
     this.#promotions = informations.map(this.#convertToPromotions);
   }
 
-  static #convertToPromotions({ name, buy, get, start_date, end_date }) {
+  static #convertToPromotions(information) {
+    const { name, buy, get, start_date, end_date } = information;
+
     return {
       name,
       buy: Number(buy),
@@ -44,7 +58,11 @@ class Promotion {
 
   isValidPeriod() {
     const today = new Date();
-    return this.#data.startDate <= today && this.#data.endDate >= today;
+    return this.#isWithinPromotionPeriod(today);
+  }
+
+  #isWithinPromotionPeriod(date) {
+    return this.#data.startDate <= date && this.#data.endDate >= date;
   }
 
   getPromotionData() {
