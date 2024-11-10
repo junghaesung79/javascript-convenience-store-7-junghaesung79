@@ -12,17 +12,29 @@ class StoreController {
   }
 
   async run() {
+    this.#synchronizeFromFile();
+
     OutputView.printIntroduce();
     OutputView.printStocks(this.batches);
 
     const orders = await InputView.getOrder();
     const bundles = PurchaseService.purchase(orders);
 
-    FileSystem.writeProducts(Shelves.denormalizeStocks());
-
     const answer = await InputView.askMembership();
     const receipt = new Receipt(bundles, isMembershiped(answer));
     OutputView.printReceipt(receipt);
+
+    this.#synchronizeToFile();
+  }
+
+  #synchronizeFromFile() {
+    const stocks = FileSystem.getStocks();
+    Shelves.arrangeStocks(stocks);
+    this.batches = this.shelves.getBatches();
+  }
+
+  #synchronizeToFile() {
+    FileSystem.writeProducts(Shelves.denormalizeStocks());
   }
 }
 
