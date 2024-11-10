@@ -1,3 +1,4 @@
+import { MAX_MEMBERSHIP_DISCOUNT_AMOUNT } from '../cosntants/config.js';
 import {
   calculateAmount,
   hasSomething,
@@ -78,12 +79,12 @@ class Receipt {
   #calculateMembershipDiscount(bundles, isMembershiped) {
     if (!isMembershiped) return 0;
 
-    const defaultAmount = bundles.reduce(
-      (amount, bundle) => amount + calculateAmount(bundle.filter(hasOwnStatus('default'))),
-      0,
-    );
+    const defaultAmount = bundles.reduce((amount, bundle) => {
+      return amount + calculateAmount(bundle.filter(hasOwnStatus('default')));
+    }, 0);
+    const discountAmount = defaultAmount * 0.3;
 
-    return defaultAmount * 0.3;
+    return Math.min(discountAmount, MAX_MEMBERSHIP_DISCOUNT_AMOUNT);
   }
 }
 
