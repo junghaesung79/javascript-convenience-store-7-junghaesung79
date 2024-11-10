@@ -1,4 +1,4 @@
-import { MESSAGES } from '../cosntants/messages.js';
+import { MESSAGES, orderMessages } from '../cosntants/messages.js';
 import Reader from '../io/Reader.js';
 import AskHandler from '../services/AskHandler.js';
 import OrderHandler from '../services/OrderHandler.js';
@@ -19,6 +19,33 @@ class InputView {
   static askMembership = this.#createInputHandler(MESSAGES.askMembership, AskHandler.getWhether);
 
   static askToContinue = this.#createInputHandler(MESSAGES.askToContinue, AskHandler.getWhether);
+
+  static async askPromotions(bundles) {
+    return await bundles.map(this.#handlePromotionBundle);
+  }
+
+  static #handlePromotionBundle = async ({ category, bundles }) => {
+    const newCategory = await this.#getNewCategory(category);
+    return { category: newCategory, bundles };
+  };
+
+  static #getNewCategory = async (category) => {
+    switch (category) {
+      case 'add':
+        return (await this.#askAddItem()) ? 'add' : 'default';
+      case 'remove':
+        return (await this.#askRemoveItems()) ? 'remove' : 'default';
+      default:
+        return category;
+    }
+  };
+
+  static #askAddItem = this.#createInputHandler(orderMessages.askAddItem, AskHandler.getWhether);
+
+  static #askRemoveItems = this.#createInputHandler(
+    orderMessages.askRemoveItems,
+    AskHandler.getWhether,
+  );
 }
 
 export default InputView;

@@ -49,9 +49,9 @@ class Promotion {
 
   getPromotionData() {
     return {
-      buy: this.#data.buy,
-      get: this.#data.get,
-      sumOfBuyGet: this.#data.buy + this.#data.get,
+      purchaseCount: this.#data.buy,
+      giftCount: this.#data.get,
+      packageSize: this.#data.buy + this.#data.get,
     };
   }
 

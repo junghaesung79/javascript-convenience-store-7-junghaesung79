@@ -27,10 +27,12 @@ class StoreController {
     OutputView.printStocks(this.batches);
 
     const orders = await InputView.getOrder();
-    const bundles = PurchaseService.purchase(orders);
+    const categorizedBundles = PurchaseService.purchase(orders);
+    const bundles = await InputView.askPromotions(categorizedBundles);
+    const promotionAppliedBundles = PurchaseService.applyPromotions(bundles);
 
-    const answer = await InputView.askMembership();
-    const receipt = new Receipt(bundles, answer);
+    const hasMembership = await InputView.askMembership();
+    const receipt = new Receipt(promotionAppliedBundles, hasMembership);
     OutputView.printReceipt(receipt);
 
     this.#synchronizeToFile();

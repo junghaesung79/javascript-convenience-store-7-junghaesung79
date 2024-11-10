@@ -9,11 +9,11 @@ import {
 
 class Receipt {
   #bundles;
-  #isMembershiped;
+  #hasMembership;
 
-  constructor(bundles, isMembershiped) {
+  constructor(bundles, hasMembership) {
     this.#bundles = bundles;
-    this.#isMembershiped = isMembershiped;
+    this.#hasMembership = hasMembership;
 
     return this.#generateReceipt();
   }
@@ -26,7 +26,7 @@ class Receipt {
     const promotionDiscount = this.#calculatePromotionDiscount(gifts);
     const membershipDiscount = this.#calculateMembershipDiscount(
       this.#bundles,
-      this.#isMembershiped,
+      this.#hasMembership,
     );
     const payment = totalAmount - (promotionDiscount + membershipDiscount);
 
@@ -76,8 +76,8 @@ class Receipt {
     return gifts.reduce(sumOfProperty('amount'), 0);
   }
 
-  #calculateMembershipDiscount(bundles, isMembershiped) {
-    if (!isMembershiped) return 0;
+  #calculateMembershipDiscount(bundles, hasMembership) {
+    if (!hasMembership) return 0;
 
     const defaultAmount = bundles.reduce((amount, bundle) => {
       return amount + calculateAmount(bundle.filter(hasOwnStatus('default')));
