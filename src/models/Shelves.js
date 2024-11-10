@@ -1,4 +1,3 @@
-import Printer from '../io/Printer.js';
 import { isValidPeriod, sameNameWith } from '../utils/common.js';
 import Promotion from './Promotion.js';
 
@@ -24,13 +23,13 @@ class Shelves {
   }
 
   static arrangeStocks(stocks) {
-    const arrangedStocks = this.#convertToStocks(stocks);
+    const arrangedStocks = this.#normalizeStocks(stocks);
     const emptyInsertedStocks = this.#insertEmptyStock(arrangedStocks);
 
     new Shelves(emptyInsertedStocks);
   }
 
-  static #convertToStocks(stocks) {
+  static #normalizeStocks(stocks) {
     return stocks.map(({ name, price, quantity, promotion }) => ({
       name,
       price: Number(price),
@@ -64,6 +63,21 @@ class Shelves {
     });
 
     return stocksCopy;
+  }
+
+  static denormalizeStocks(stocks) {
+    const toStringPromotion = (promotion) => {
+      const name = promotion.getName();
+      if (name === '') return 'null';
+      return name;
+    };
+
+    return stocks.map((stock) => ({
+      name: stock.name,
+      price: String(stock.price),
+      quantity: String(stock.quantity),
+      promotion: toStringPromotion(stock.promotion),
+    }));
   }
 
   hasValidPeriodItem(name) {
