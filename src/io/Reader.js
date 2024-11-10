@@ -1,15 +1,11 @@
 import { Console } from '@woowacourse/mission-utils';
+import * as ERROR_MESSAGES from '../cosntants/errorMessages';
 
 class Reader {
   static async readLine(query) {
-    try {
-      const line = await Console.readLineAsync(query);
-      if (line.trim() === '') throw new Error('[ERROR] 값을 입력해주세요.');
-      return line;
-    } catch (error) {
-      Console.print(error.message);
-      return await this.readLine(query);
-    }
+    const line = await Console.readLineAsync(query);
+    if (line.trim() === '') throwError(ERROR_MESSAGES.noInputs);
+    return line;
   }
 }
 
