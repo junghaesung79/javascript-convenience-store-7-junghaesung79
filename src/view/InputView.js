@@ -1,4 +1,5 @@
 import { MESSAGES, orderMessages } from '../cosntants/messages.js';
+import Printer from '../io/Printer.js';
 import Reader from '../io/Reader.js';
 import AskHandler from '../services/AskHandler.js';
 import OrderHandler from '../services/OrderHandler.js';
@@ -21,12 +22,12 @@ class InputView {
   static askToContinue = this.#createInputHandler(MESSAGES.askToContinue, AskHandler.getWhether);
 
   static async askPromotions(bundles) {
-    return await bundles.map(this.#handlePromotionBundle);
+    return Promise.all(bundles.map(this.#handlePromotionBundle));
   }
 
-  static #handlePromotionBundle = async ({ category, bundles }) => {
+  static #handlePromotionBundle = async ({ category, bundle }) => {
     const newCategory = await this.#getNewCategory(category);
-    return { category: newCategory, bundles };
+    return { category: newCategory, bundle };
   };
 
   static #getNewCategory = async (category) => {

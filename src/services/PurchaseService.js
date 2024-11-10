@@ -1,4 +1,3 @@
-import Printer from '../io/Printer.js';
 import Shelves from '../models/Shelves.js';
 import { isValidPeriod, sameNameWith } from '../utils/common.js';
 
@@ -44,35 +43,51 @@ class PurchaseService {
     });
   }
 
-  b() {
-    // 추가 여부 물음 askAddItem
+  static applyPromotions(bundles) {
+    return bundles.map(({ category, bundle }) => {
+      const { packageSize } = bundle[0].promotion.getPromotionData();
+      switch (category) {
+        case 'add':
+          return this.#addItem(bundle, packageSize);
+        case 'remove':
+          return this.#removeItems(bundle, packageSize);
+        default:
+          return this.#changeStatus(bundle, packageSize);
+      }
+    });
+  }
+
+  static #addItem(bundle, packageSize) {
+    const shelves = new Shelves();
     const newItem = { ...bundle[0] };
     shelves.takeItems([newItem]);
     bundle.unshift(newItem);
+    return this.#changeStatus(bundle, packageSize);
   }
 
-  c() {
-    // 제외 여부 물음 askRemoveItems
+  static #removeItems(bundle, packageSize) {
+    const shelves = new Shelves();
     const 프로모션상품개수 = bundle.filter(isValidPeriod).length;
-    const 적용상품개수 = Math.floor(프로모션상품개수 / 행사묶음물건수) * 행사묶음물건수;
+    const 적용상품개수 = Math.floor(프로모션상품개수 / packageSize) * packageSize;
     const 미적용상품개수 = bundle.length - 적용상품개수;
     shelves.turnBackItems(bundle.splice(bundle.length - 미적용상품개수, 미적용상품개수));
+    return this.#changeStatus(bundle, packageSize);
   }
 
-  static #행사적용(bundle, 행사묶음물건수) {
-    if (행사묶음물건수 === 0) {
+  static #changeStatus(bundle, packageSize) {
+    if (packageSize === 0) {
       return bundle.map((item) => ({ ...item, status: 'default' }));
     }
 
     const 프로모션상품개수 = bundle.filter(isValidPeriod).length;
-    const 적용세트수 = Math.floor(프로모션상품개수 / 행사묶음물건수) * 행사묶음물건수;
+    const 적용세트수 = Math.floor(프로모션상품개수 / packageSize) * packageSize;
 
     return bundle.map((item, index) => {
       if (index >= 적용세트수) {
         return { ...item, status: 'default' };
       }
 
-      if (index % promotionUnitCount === 0) {
+      if (index % packageSize === 0) {
         return { ...item, status: 'gifted' };
       }
 
@@ -85,7 +100,7 @@ class PurchaseService {
   }
 
   static #나누어떨어질때(bundle, 행사묶음물건수) {
-    return this.isValidPeriod(bundle[bundle.length - 1]) && bundle.length % 행사묶음물건수 === 0;
+    return isValidPeriod(bundle[bundle.length - 1]) && bundle.length % 행사묶음물건수 === 0;
   }
 
   static #더받을수있을때(bundle, 행사묶음물건수, 몇개사면) {

@@ -3,6 +3,7 @@ import { InputView, OutputView } from './view/index.js';
 import Receipt from './models/Receipt.js';
 import Shelves from './models/Shelves.js';
 import FileSystem from './io/FileSystem.js';
+import Printer from './io/Printer.js';
 
 class StoreController {
   constructor() {
