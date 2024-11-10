@@ -1,7 +1,7 @@
 import * as ERROR_MESSAGES from './cosntants/errorMessages.js';
 import Promotion from './models/Promotion.js';
 import { sameNameWith } from './utils/common.js';
-import { throwError } from './utils/validate.js';
+import { throwError } from './utils/errorHandler.js';
 
 export const arrangeStocks = (stocks) => {
   // 프로모션 재고가 있는데 일반 재고가 없는 경우 일반 재고 0개로 추가

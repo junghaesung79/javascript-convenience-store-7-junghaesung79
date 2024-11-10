@@ -1,24 +1,25 @@
-import { throwError } from '../utils/validate';
+import * as ERROR_MESSAGES from '../cosntants/errorMessages.js';
+import { throwError } from '../utils/errorHandler.js';
+import { isValidNumber } from '../utils/validationRules.js';
 
 class OrderHandler {
   static #rules = {
-    isEmpty(orders) {
-      return orders.length === 0;
-    },
-    hasEmptyOrder(value) {
-      return !value;
+    isEmpty: (orders) => orders.length === 0,
+    hasEmptyOrder: (string) => !string,
+    hasValidFormat: (string) => {
+      return string.startsWith('[') && string.endsWith(']') && string.split('-').length === 2;
     },
   };
 
   static format(string) {
-    const orders = OrderHandler.#separateOrderString(string);
-    OrderHandler.#validateOrders(orders);
+    const orderTokens = OrderHandler.#separateOrderString(string);
+    OrderHandler.#validateOrderFormat(orderTokens);
 
-    const parsedOrders = OrderHandler.#parseOrders(orders);
-    OrderHandler.#validateOrders(parsedOrders);
+    const parsedOrders = OrderHandler.#parseOrders(orderTokens);
+    OrderHandler.#validateOrderValues(parsedOrders);
 
     const combinedOrders = OrderHandler.#combineSameOrders(parsedOrders);
-    OrderHandler.#checkOrdersQuantity(combinedOrders);
+    OrderHandler.#validateAvailability(combinedOrders);
 
     return combinedOrders;
   }
@@ -27,34 +28,46 @@ class OrderHandler {
     return string.split(',');
   }
 
-  static #validateOrders(orders) {
-    if (this.#rules.isEmpty(orders)) throwError(ERROR_MESSAGES.orders.isEmpty);
+  static #validateOrderFormat(orderTokens) {
+    if (this.#rules.isEmpty(orderTokens)) throwError(ERROR_MESSAGES.orders.isEmpty);
 
-    orders.some((order) => {
+    orderTokens.forEach((order) => {
       if (this.#rules.hasEmptyOrder(order)) throwError(ERROR_MESSAGES.orders.hasEmptyOrder);
+      if (this.#rules.hasValidFormat(order)) throwError(ERROR_MESSAGES.orders.invalidFormat);
     });
   }
 
-  static #parseOrders(orders) {
-    return orders.map((phrase) => {
-      const [name, quantity] = phrase.slice(1, -1).split('-');
-      return {
-        name,
-        quantity: Number(quantity),
-      };
+  static #parseOrders(orderTokens) {
+    return orderTokens.map((token) => {
+      const [name, quantity] = token.slice(1, -1).split('-');
+      return { name, quantity: Number(quantity) };
     });
   }
 
-  static #validateEachOrder(orders) {
-    //
+  static #validateOrderValues(orders) {
+    orders.forEach((order) => {
+      if (this.#rules.isValidNumber(order.quantity)) {
+        throwError(ERROR_MESSAGES.orders.invalidNumber);
+      }
+    });
   }
 
   static #combineSameOrders(orders) {
-    //
+    return Object.values(
+      orders.reduce((acc, order) => {
+        if (!acc[order.name]) {
+          acc[order.name] = { ...order };
+          return acc;
+        }
+
+        acc[order.name].quantity += order.quantity;
+        return acc;
+      }, {}),
+    );
   }
 
-  static #checkOrdersQuantity(orders) {
-    //
+  static #validateAvailability(orders) {
+    // 정확한 상품명
   }
 }
 
