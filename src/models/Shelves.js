@@ -41,8 +41,9 @@ class Shelves {
   static #insertEmptyStock(stocks) {
     // 프로모션 재고가 있는데 일반 재고가 없는 경우, 일반 재고 표시하기 위해 개수가 0인 일반 재고를 추가
     const isPromotionStockExistNotDefault = (stock, nextStock) => {
-      const hasPromotion = stock.promotion.getName() !== 'null';
-      const hasMatchingDefaultNext = nextStock && nextStock.name === stock.name;
+      const hasPromotion = stock.promotion.getName() !== '';
+      const hasMatchingDefaultNext =
+        nextStock && nextStock.name === stock.name && nextStock.promotion.getName() === '';
 
       return hasPromotion && !hasMatchingDefaultNext;
     };
