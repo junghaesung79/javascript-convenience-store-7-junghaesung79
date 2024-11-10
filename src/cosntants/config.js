@@ -1,1 +1,3 @@
-export const MAX_MEMBERSHIP_DISCOUNT_AMOUNT = 8000;
+export const maxMembershipDiscountAmount = 8000;
+
+export const errorPrefix = '[ERROR]';

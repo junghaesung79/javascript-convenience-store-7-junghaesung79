@@ -1,11 +1,7 @@
-export const isValidNumber = (input) => {
-  if (!input || input.trim() !== input) return false;
-  if (input.startsWith('0')) return false;
-  if (input.length > 15) return false;
+export const isInvalidNumber = (input) => {
+  if (!Number.isInteger(input)) return true;
+  if (input <= 0) return true;
+  if (input.toString().length > 15) return true;
 
-  const number = Number(input);
-  if (!Number.isInteger(number)) return false;
-  if (number.toString() !== input) return false;
-
-  return true;
+  return false;
 };

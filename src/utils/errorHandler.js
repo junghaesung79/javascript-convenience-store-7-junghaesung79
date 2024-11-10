@@ -1,4 +1,5 @@
-import Printer from '../io/Printer';
+import Printer from '../io/Printer.js';
+import * as CONFIG from '../cosntants/config.js';
 
 export const tryAgainUntilValid = (fn) => {
   while (true) {

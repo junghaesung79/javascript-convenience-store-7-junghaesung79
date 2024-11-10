@@ -1,7 +1,7 @@
 import { sameNameWith } from '../utils/common.js';
 
 class Promotion {
-  static promotions = [];
+  static #promotions = [];
   static #INACTIVE_DATES = {
     startDate: new Date(0),
     endDate: new Date(0),
@@ -25,7 +25,7 @@ class Promotion {
   }
 
   static updatePromotions(informations) {
-    this.promotions = informations.map(this.#convertToPromotions);
+    this.#promotions = informations.map(this.#convertToPromotions);
   }
 
   static #convertToPromotions({ name, buy, get, start_date, end_date }) {
@@ -39,12 +39,12 @@ class Promotion {
   }
 
   static getPromotions() {
-    return this.promotions;
+    return [...this.#promotions];
   }
 
   isValidPeriod() {
     const today = new Date();
-    return this.#data.start_date <= today && this.#data.end_date >= today;
+    return this.#data.startDate <= today && this.#data.endDate >= today;
   }
 
   getPromotionData() {

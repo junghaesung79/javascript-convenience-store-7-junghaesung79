@@ -1,13 +1,13 @@
 import * as ERROR_MESSAGES from '../cosntants/errorMessages.js';
 import { throwError } from '../utils/errorHandler.js';
-import { isValidNumber } from '../utils/validationRules.js';
+import { isInvalidNumber } from '../utils/validationRules.js';
 
 class OrderHandler {
   static #rules = {
     isEmpty: (orders) => orders.length === 0,
     hasEmptyOrder: (string) => !string,
-    hasValidFormat: (string) => {
-      return string.startsWith('[') && string.endsWith(']') && string.split('-').length === 2;
+    hasInvalidFormat: (string) => {
+      return !(string.startsWith('[') && string.endsWith(']') && string.split('-').length === 2);
     },
   };
 
@@ -33,7 +33,7 @@ class OrderHandler {
 
     orderTokens.forEach((order) => {
       if (this.#rules.hasEmptyOrder(order)) throwError(ERROR_MESSAGES.orders.hasEmptyOrder);
-      if (this.#rules.hasValidFormat(order)) throwError(ERROR_MESSAGES.orders.invalidFormat);
+      if (this.#rules.hasInvalidFormat(order)) throwError(ERROR_MESSAGES.orders.invalidFormat);
     });
   }
 
@@ -46,7 +46,7 @@ class OrderHandler {
 
   static #validateOrderValues(orders) {
     orders.forEach((order) => {
-      if (this.#rules.isValidNumber(order.quantity)) {
+      if (isInvalidNumber(order.quantity)) {
         throwError(ERROR_MESSAGES.orders.invalidNumber);
       }
     });

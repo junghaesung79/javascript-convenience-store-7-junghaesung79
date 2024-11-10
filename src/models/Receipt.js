@@ -1,4 +1,4 @@
-import { MAX_MEMBERSHIP_DISCOUNT_AMOUNT } from '../cosntants/config.js';
+import * as CONFIG from '../cosntants/config.js';
 import {
   calculateAmount,
   hasSomething,
@@ -46,7 +46,7 @@ class Receipt {
   #combineItems(bundles) {
     return bundles.map((bundle) => {
       return {
-        name: bundle[0].name,
+        name: bundle.name,
         quantity: bundle.length,
         amount: calculateAmount(bundle),
       };
@@ -84,7 +84,7 @@ class Receipt {
     }, 0);
     const discountAmount = defaultAmount * 0.3;
 
-    return Math.min(discountAmount, MAX_MEMBERSHIP_DISCOUNT_AMOUNT);
+    return Math.min(discountAmount, CONFIG.maxMembershipDiscountAmount);
   }
 }
 
