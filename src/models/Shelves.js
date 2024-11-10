@@ -1,15 +1,24 @@
+import Printer from '../io/Printer.js';
 import { isValidPeriod, sameNameWith } from '../utils/common.js';
 import Promotion from './Promotion.js';
 
+// batches: [{
+//   name: string
+//   price: number
+//   quantity: number
+//   promotion: Promotion{}
+// }]
+
 class Shelves {
   static #instance = null;
-  #bundles;
+  #batches;
 
-  constructor() {
+  constructor(batches = []) {
     if (Shelves.#instance) {
       return Shelves.#instance;
     }
 
+    this.#batches = batches;
     Shelves.#instance = this;
     return this;
   }
@@ -17,7 +26,8 @@ class Shelves {
   static arrangeStocks(stocks) {
     const arrangedStocks = this.#convertToStocks(stocks);
     const emptyInsertedStocks = this.#insertEmptyStock(arrangedStocks);
-    return new Shelves(emptyInsertedStocks);
+
+    new Shelves(emptyInsertedStocks);
   }
 
   static #convertToStocks(stocks) {
@@ -31,55 +41,63 @@ class Shelves {
 
   static #insertEmptyStock(stocks) {
     // 프로모션 재고가 있는데 일반 재고가 없는 경우, 일반 재고 표시하기 위해 개수가 0인 일반 재고를 추가
-    const isPromotionStockExistNotDefault = (stock) => {
-      return stock.promotion !== 'null' && stocksCopy[index + 1]?.name !== stock.name;
+    const isPromotionStockExistNotDefault = (stock, nextStock) => {
+      const hasPromotion = stock.promotion.getName() !== 'null';
+      const hasMatchingDefaultNext = nextStock && nextStock.name === stock.name;
+
+      return hasPromotion && !hasMatchingDefaultNext;
     };
 
     const indexToInsert = [];
     const stocksCopy = [...stocks];
     stocksCopy.forEach((stock, index) => {
-      if (isPromotionStockExistNotDefault(stock)) indexToInsert.push(index);
+      if (isPromotionStockExistNotDefault(stock, stocksCopy[index + 1])) indexToInsert.push(index);
     });
 
     indexToInsert.reverse().forEach((index) => {
-      arrangedStocks.splice(index + 1, 0, {
+      stocksCopy.splice(index + 1, 0, {
         name: stocksCopy[index].name,
         price: Number(stocksCopy[index].price),
         quantity: 0,
         promotion: new Promotion('null'),
       });
     });
+
+    return stocksCopy;
   }
 
   hasValidPeriodItem(name) {
-    return this.#bundles.filter(sameNameWith(name)).some(isValidPeriod());
+    return this.#batches.filter(sameNameWith(name)).some(isValidPeriod());
   }
 
-  bringOneItem(name) {
-    const bundle = this.#bundles.find(sameNameWith(name));
-    bundle.quantity -= 1;
+  takeItems(items) {
+    const [promotionBatch, defaultBatch] = this.#findBatches(items);
+    const promotionCount = items.filter(isValidPeriod).length;
 
-    return {
-      name: bundle.name,
-      price: bundle.price,
-      promotion: bundle.promotion,
-    };
+    promotionBatch.quantity -= promotionCount;
+    defaultBatch.quantity -= items.length - promotionCount;
   }
 
   turnBackItems(items) {
+    const [promotionBatch, defaultBatch] = this.#findBatches(items);
     const promotionCount = items.filter(isValidPeriod).length;
-    const promotionBundleIndex = this.#bundles.findIndex((bundle) => {
-      return bundle.name === items[0].name && isValidPeriod(bundle);
-    });
 
-    const promotionBundle = this.#bundles[promotionBundleIndex];
-    const defaultBundle = this.#bundles[promotionBundleIndex + 1];
-    promotionBundle.quantity += promotionCount;
-    defaultBundle.quantity += items.length - promotionCount;
+    promotionBatch.quantity += promotionCount;
+    defaultBatch.quantity += items.length - promotionCount;
   }
 
-  getBundles() {
-    return [...this.#bundles];
+  #findBatches(items) {
+    const promotionBatchIndex = this.#batches.findIndex((batch) => {
+      return batch.name === items[0].name && isValidPeriod(batch);
+    });
+
+    const promotionBatch = this.#batches[promotionBatchIndex];
+    const defaultBatch = this.#batches[promotionBatchIndex + 1];
+    return [promotionBatch, defaultBatch];
+  }
+
+  getBatches() {
+    return [...this.#batches];
   }
 
   static clearInstance() {
