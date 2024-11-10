@@ -1,9 +1,10 @@
-import { formatOrder, arrangeStocks, addToCart, getProducts, isMembershiped } from './functions.js';
+import { arrangeStocks, addToCart, getProducts, isMembershiped } from './functions.js';
 import FileSystem from './io/FileSystem.js';
 import Promotion from './models/Promotion.js';
 import PurchaseService from './services/PurchaseService.js';
 import { InputView, OutputView } from './view/index.js';
 import Receipt from './models/Receipt.js';
+import OrderHandler from './services/OrderHandler.js';
 
 class StoreController {
   constructor() {
@@ -19,7 +20,8 @@ class StoreController {
 
     const products = getProducts(arrangedStocks);
     const orderString = await InputView.getOrder();
-    const orders = formatOrder(orderString);
+    const orders = OrderHandler.format(orderString);
+
     const cart = addToCart(orders, products);
     const purchasedBundles = PurchaseService.purchaseCartBundles(cart, products);
     const answer = await InputView.askMembership();

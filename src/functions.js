@@ -32,16 +32,6 @@ export const arrangeStocks = (stocks) => {
   return arrangedStocks;
 };
 
-export const formatOrder = (string) => {
-  return string.split(',').map((phrase) => {
-    const [name, quantity] = phrase.slice(1, -1).split('-');
-    return {
-      name,
-      quantity: Number(quantity),
-    };
-  });
-};
-
 export const getProducts = (stocks) => {
   return stocks.flatMap((stock) => {
     return Array.from({ length: stock.quantity }, () => {
