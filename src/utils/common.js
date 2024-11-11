@@ -22,3 +22,7 @@ export const hasOwnStatus = (status) => {
 export const sumOfProperty = (property) => {
   return (acc, cur) => acc + cur[property];
 };
+
+export const isValidBundle = (bundle) => {
+  return bundle && bundle.length > 0;
+};

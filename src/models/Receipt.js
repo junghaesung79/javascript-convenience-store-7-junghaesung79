@@ -5,6 +5,7 @@ import {
   hasOwnStatus,
   isValidPeriod,
   sumOfProperty,
+  isValidBundle,
 } from '../utils/common.js';
 
 class Receipt {
@@ -44,7 +45,7 @@ class Receipt {
   }
 
   #combineItems(bundles) {
-    return bundles.map((bundle) => {
+    return bundles.filter(isValidBundle).map((bundle) => {
       return {
         name: bundle[0].name,
         quantity: bundle.length,

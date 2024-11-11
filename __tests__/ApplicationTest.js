@@ -3,6 +3,8 @@ import { MissionUtils } from '@woowacourse/mission-utils';
 import { EOL as LINE_SEPARATOR } from 'os';
 import INITIAL_PRODUCTS from '../src/cosntants/initialProducts.js';
 import FileSystem from '../src/io/FileSystem.js';
+import Promotion from '../src/models/Promotion.js';
+import Shelves from '../src/models/Shelves.js';
 
 const mockQuestions = (inputs) => {
   const messages = [];
@@ -98,6 +100,9 @@ describe('편의점', () => {
   beforeEach(() => {
     jest.spyOn(FileSystem, 'getStocks').mockReturnValue(INITIAL_PRODUCTS);
     jest.spyOn(FileSystem, 'writeProducts').mockImplementation(() => {});
+
+    Shelves.clearInstance();
+    Promotion.clearPromotions();
   });
 
   afterEach(() => {
@@ -108,7 +113,7 @@ describe('편의점', () => {
 
   test('파일에 있는 상품 목록 출력', async () => {
     await run({
-      inputs: ['[콜라-1]', 'N', 'N'],
+      inputs: ['[콜라-1]', 'N', 'N', 'N'],
       expected: [
         /* prettier-ignore */
         '- 콜라 1,000원 10개 탄산2+1',

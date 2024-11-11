@@ -76,6 +76,10 @@ class Promotion {
   getName() {
     return this.#data.name;
   }
+
+  static clearPromotions() {
+    Promotion.#promotions = [];
+  }
 }
 
 export default Promotion;
