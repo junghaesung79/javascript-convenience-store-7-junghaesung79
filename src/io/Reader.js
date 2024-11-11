@@ -1,5 +1,6 @@
 import { Console } from '@woowacourse/mission-utils';
 import * as ERROR_MESSAGES from '../cosntants/errorMessages.js';
+import { throwError } from '../utils/errorHandler.js';
 
 class Reader {
   static async readLine(query) {
