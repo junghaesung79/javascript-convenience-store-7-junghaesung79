@@ -1,4 +1,6 @@
 import * as ERROR_MESSAGES from '../cosntants/errorMessages.js';
+import Shelves from '../models/Shelves.js';
+import { sameNameWith, sumOfProperty } from '../utils/common.js';
 import { throwError } from '../utils/errorHandler.js';
 import { isInvalidNumber } from '../utils/validationRules.js';
 
@@ -67,7 +69,26 @@ class OrderHandler {
   }
 
   static #validateAvailability(orders) {
-    // 정확한 상품명
+    const shelves = new Shelves();
+    const batches = shelves.getBatches();
+
+    orders.forEach((order) => {
+      this.#validateProductExists(order, batches);
+      this.#validateStockQuantity(order, batches);
+    });
+  }
+
+  static #validateProductExists(order, batches) {
+    const exists = batches.some(sameNameWith(order.name));
+    if (!exists) throwError(ERROR_MESSAGES.orders.invalidProductName);
+  }
+
+  static #validateStockQuantity(order, batches) {
+    const totalStock = batches
+      .filter(sameNameWith(order.name))
+      .reduce(sumOfProperty('quantity'), 0);
+
+    if (order.quantity > totalStock) throwError(ERROR_MESSAGES.orders.exceedsStock);
   }
 }
 

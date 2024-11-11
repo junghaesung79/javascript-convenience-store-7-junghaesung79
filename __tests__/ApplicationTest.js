@@ -133,20 +133,20 @@ describe('편의점', () => {
     });
   });
 
-  // test('프로모션 없는 여러 종류의 일반 상품 구매', async () => {
-  //   await run({
-  //     inputs: ['[비타민워터-3],[물-2],[정식도시락-2]', 'N', 'N'],
-  //     expectedIgnoringWhiteSpaces: ['내실돈18,300'],
-  //   });
-  // });
+  test('프로모션 없는 여러 종류의 일반 상품 구매', async () => {
+    await run({
+      inputs: ['[비타민워터-3],[물-2],[정식도시락-2]', 'N', 'N'],
+      expectedIgnoringWhiteSpaces: ['내실돈18,300'],
+    });
+  });
 
-  // test('재고 수량을 초과하여 주문', async () => {
-  //   await runExceptions({
-  //     inputs: ['[컵라면-12]', 'N', 'N'],
-  //     inputsToTerminate: INPUTS_TO_TERMINATE,
-  //     expectedErrorMessage: '[ERROR]',
-  //   });
-  // });
+  test('재고 수량을 초과하여 주문', async () => {
+    await runExceptions({
+      inputs: ['[컵라면-12]'],
+      inputsToTerminate: INPUTS_TO_TERMINATE,
+      expectedErrorMessage: '[ERROR]',
+    });
+  });
 
   // test('빈 입력값 처리', async () => {
   //   await runExceptions({

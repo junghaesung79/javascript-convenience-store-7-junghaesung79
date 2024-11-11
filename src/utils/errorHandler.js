@@ -1,10 +1,10 @@
 import Printer from '../io/Printer.js';
 import * as CONFIG from '../cosntants/config.js';
 
-export const tryAgainUntilValid = (fn) => {
+export const retryUntilValid = async (fn) => {
   while (true) {
     try {
-      return fn();
+      return await fn();
     } catch (error) {
       Printer.print(error.message);
     }

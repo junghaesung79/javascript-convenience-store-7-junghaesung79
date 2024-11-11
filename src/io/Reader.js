@@ -1,5 +1,5 @@
 import { Console } from '@woowacourse/mission-utils';
-import * as ERROR_MESSAGES from '../cosntants/errorMessages';
+import * as ERROR_MESSAGES from '../cosntants/errorMessages.js';
 
 class Reader {
   static async readLine(query) {

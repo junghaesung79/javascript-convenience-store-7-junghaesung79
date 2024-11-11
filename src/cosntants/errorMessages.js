@@ -4,6 +4,7 @@ export const orders = Object.freeze({
   hasEmptyOrder: '비어 있지 않는 주문을 입력해 주세요.',
   invalidFormat: '[상품명-수량] 형식으로 입력해 주세요',
   invalidNumber: '정상적인 숫자를 입력해 주세요.',
+  exceedsStock: '재고 수량을 초과하였습니다.',
 });
 
 export const noInputs = '값을 입력해 주세요.';
