@@ -1,4 +1,3 @@
-import * as CONFIG from '../constants/config.js';
 import {
   calculateAmount,
   hasSomething,
@@ -7,6 +6,7 @@ import {
   sumOfProperty,
   isValidBundle,
 } from '../utils/common.js';
+import { CONFIG } from '../constants/index.js';
 
 class Receipt {
   #bundles;

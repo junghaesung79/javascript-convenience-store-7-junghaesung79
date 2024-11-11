@@ -1,4 +1,4 @@
-import Shelves from '../models/Shelves.js';
+import { Shelves } from '../models/index.js';
 import { isValidPeriod, sameNameWith } from '../utils/common.js';
 
 class PurchaseService {

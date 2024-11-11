@@ -1,5 +1,5 @@
-import * as ERROR_MESSAGES from '../constants/errorMessages.js';
 import { throwError } from '../utils/errorHandler.js';
+import { ERROR_MESSAGES } from '../constants/index.js';
 
 class AskHandler {
   static #VALID_ANSWERS = ['Y', 'N'];

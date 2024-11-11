@@ -1,5 +1,5 @@
 import { isValidPeriod, sameNameWith } from '../utils/common.js';
-import Promotion from './Promotion.js';
+import { Promotion } from './index.js';
 
 // batches: [{
 //   name: string

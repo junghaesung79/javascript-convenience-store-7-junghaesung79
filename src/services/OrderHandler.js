@@ -1,5 +1,5 @@
-import * as ERROR_MESSAGES from '../constants/errorMessages.js';
-import Shelves from '../models/Shelves.js';
+import { ERROR_MESSAGES } from '../constants/index.js';
+import { Shelves } from '../models/index.js';
 import { sameNameWith, sumOfProperty } from '../utils/common.js';
 import { throwError } from '../utils/errorHandler.js';
 import { isInvalidNumber } from '../utils/validationRules.js';

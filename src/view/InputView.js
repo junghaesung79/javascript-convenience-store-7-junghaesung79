@@ -1,7 +1,6 @@
-import { MESSAGES, orderMessages } from '../constants/messages.js';
-import Reader from '../io/Reader.js';
-import AskHandler from '../services/AskHandler.js';
-import OrderHandler from '../services/OrderHandler.js';
+import { MESSAGES, ORDER_MESSAGES } from '../constants/index.js';
+import { Reader } from '../io/index.js';
+import { AskHandler, OrderHandler } from '../services/index.js';
 import { retryUntilValid } from '../utils/errorHandler.js';
 
 class InputView {
@@ -40,10 +39,10 @@ class InputView {
     }
   };
 
-  static #askAddItem = this.#createInputHandler(orderMessages.askAddItem, AskHandler.getWhether);
+  static #askAddItem = this.#createInputHandler(ORDER_MESSAGES.askAddItem, AskHandler.getWhether);
 
   static #askRemoveItems = this.#createInputHandler(
-    orderMessages.askRemoveItems,
+    ORDER_MESSAGES.askRemoveItems,
     AskHandler.getWhether,
   );
 }

@@ -1,8 +1,7 @@
-import PurchaseService from './services/PurchaseService.js';
+import { PurchaseService } from './services/index.js';
 import { InputView, OutputView } from './view/index.js';
-import Receipt from './models/Receipt.js';
-import Shelves from './models/Shelves.js';
-import FileSystem from './io/FileSystem.js';
+import { Receipt, Shelves } from './models/index.js';
+import { FileSystem } from './io/index.js';
 
 class StoreController {
   constructor() {

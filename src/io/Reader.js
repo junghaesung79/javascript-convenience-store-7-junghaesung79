@@ -1,5 +1,5 @@
 import { Console } from '@woowacourse/mission-utils';
-import * as ERROR_MESSAGES from '../constants/errorMessages.js';
+import { ERROR_MESSAGES } from '../constants/index.js';
 import { throwError } from '../utils/errorHandler.js';
 
 class Reader {

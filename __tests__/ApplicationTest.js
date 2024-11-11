@@ -1,10 +1,8 @@
 import App from '../src/App.js';
 import { MissionUtils } from '@woowacourse/mission-utils';
-import { EOL as LINE_SEPARATOR } from 'os';
-import INITIAL_PRODUCTS from '../src/cosntants/initialProducts.js';
-import FileSystem from '../src/io/FileSystem.js';
-import Promotion from '../src/models/Promotion.js';
-import Shelves from '../src/models/Shelves.js';
+import { INITIAL_PRODUCTS } from '../src/constants/index.js';
+import { FileSystem } from '../src/io/index.js';
+import { Promotion, Shelves } from '../src/models/index.js';
 
 const mockQuestions = (inputs) => {
   const messages = [];
@@ -36,7 +34,7 @@ const getLogSpy = () => {
 };
 
 const getOutput = (logSpy) => {
-  return [...logSpy.mock.calls].join(LINE_SEPARATOR);
+  return [...logSpy.mock.calls].join('-');
 };
 
 const expectLogContains = (received, expects) => {

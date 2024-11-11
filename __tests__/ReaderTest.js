@@ -1,7 +1,6 @@
-import { Console } from '@woowacourse/mission-utils.js';
-import Reader from '../src/io/Reader.js';
-import * as ERROR_MESSAGES from '../src/cosntants/errorMessages.js';
-import * as CONFIG from '../src/cosntants/config.js';
+import { Console } from '@woowacourse/mission-utils';
+import { Reader } from '../src/io/index.js';
+import { CONFIG, ERROR_MESSAGES } from '../src/constants/index.js';
 
 const mockQuestions = (inputs) => {
   const messages = [];

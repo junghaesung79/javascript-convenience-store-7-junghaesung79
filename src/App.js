@@ -1,6 +1,5 @@
-import FileSystem from './io/FileSystem.js';
-import Promotion from './models/Promotion.js';
-import Shelves from './models/Shelves.js';
+import { FileSystem } from './io/index.js';
+import { Promotion, Shelves } from './models/index.js';
 import StoreController from './StoreController.js';
 
 class App {
