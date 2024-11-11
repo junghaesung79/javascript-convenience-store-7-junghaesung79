@@ -83,7 +83,7 @@ class Shelves {
   }
 
   hasValidPeriodItem(name) {
-    return this.#batches.filter(sameNameWith(name)).some(isValidPeriod());
+    return this.#batches.filter(sameNameWith(name)).some(isValidPeriod);
   }
 
   takeItems(items) {

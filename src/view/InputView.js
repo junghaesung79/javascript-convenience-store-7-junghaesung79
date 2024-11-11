@@ -34,7 +34,7 @@ class InputView {
       case 'add':
         return (await this.#askAddItem()) ? 'add' : 'default';
       case 'remove':
-        return (await this.#askRemoveItems()) ? 'remove' : 'default';
+        return (await this.#askRemoveItems()) ? 'default' : 'remove';
       default:
         return category;
     }

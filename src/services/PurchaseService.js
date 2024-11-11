@@ -19,9 +19,6 @@ class PurchaseService {
           return Array.from({ length: count }, () => ({ name, price, promotion }));
         });
 
-      // 프로모션 기간이 아닌 경우 일반 재고를 먼저 사용한다.
-      if (products[0].promotion.isValidPeriod()) products.reverse();
-
       const bundle = products.splice(0, quantity);
       shelves.takeItems(bundle);
       return bundle;

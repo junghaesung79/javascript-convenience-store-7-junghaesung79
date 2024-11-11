@@ -11,6 +11,7 @@ export const hasSomething = (fn) => {
 };
 
 export const calculateAmount = (items) => {
+  if (items.length === 0) return 0;
   return items[0].price * items.length;
 };
 
