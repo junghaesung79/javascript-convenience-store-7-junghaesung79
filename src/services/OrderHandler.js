@@ -1,4 +1,4 @@
-import * as ERROR_MESSAGES from '../cosntants/errorMessages.js';
+import * as ERROR_MESSAGES from '../constants/errorMessages.js';
 import Shelves from '../models/Shelves.js';
 import { sameNameWith, sumOfProperty } from '../utils/common.js';
 import { throwError } from '../utils/errorHandler.js';

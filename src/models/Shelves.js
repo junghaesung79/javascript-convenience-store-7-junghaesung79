@@ -1,4 +1,3 @@
-import Printer from '../io/Printer.js';
 import { isValidPeriod, sameNameWith } from '../utils/common.js';
 import Promotion from './Promotion.js';
 

@@ -1,4 +1,3 @@
-import Printer from '../io/Printer.js';
 import Shelves from '../models/Shelves.js';
 import { isValidPeriod, sameNameWith } from '../utils/common.js';
 

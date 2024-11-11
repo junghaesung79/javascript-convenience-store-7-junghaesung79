@@ -1,5 +1,5 @@
 import Printer from '../io/Printer.js';
-import * as CONFIG from '../cosntants/config.js';
+import * as CONFIG from '../constants/config.js';
 
 export const retryUntilValid = async (fn) => {
   while (true) {

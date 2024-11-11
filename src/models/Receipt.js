@@ -1,4 +1,4 @@
-import * as CONFIG from '../cosntants/config.js';
+import * as CONFIG from '../constants/config.js';
 import {
   calculateAmount,
   hasSomething,

@@ -1,5 +1,7 @@
-import { Console } from '@woowacourse/mission-utils';
-import Reader from '../src/io/Reader';
+import { Console } from '@woowacourse/mission-utils.js';
+import Reader from '../src/io/Reader.js';
+import * as ERROR_MESSAGES from '../src/cosntants/errorMessages.js';
+import * as CONFIG from '../src/cosntants/config.js';
 
 const mockQuestions = (inputs) => {
   const messages = [];
@@ -25,26 +27,66 @@ const getLogSpy = () => {
 };
 
 describe('Reader 클래스 테스트', () => {
-  test('readLine 기능 테스트', async () => {
-    // given
-    mockQuestions(['abc']);
-
-    // when
-    const line = await Reader.readLine('');
-
-    // then
-    expect(line).toBe('abc');
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
-  test('빈 입력 예외 테스트', async () => {
+  test('정상적인 입력 처리', async () => {
     // given
-    const logSpy = getLogSpy();
-    mockQuestions(['', 'abc']);
+    const query = '입력하세요: ';
+    const expectedInput = 'test input';
+    mockQuestions([expectedInput]);
 
     // when
-    const line = await Reader.readLine('');
+    const result = await Reader.readLine(query);
 
     // then
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('[ERROR]'));
+    expect(result).toBe(expectedInput);
+    expect(Console.readLineAsync).toHaveBeenCalledWith(query);
+  });
+
+  test('빈 입력 시 에러 발생 및 재시도', async () => {
+    // given
+    const query = '입력하세요: ';
+    const validInput = 'valid input';
+    mockQuestions(['', validInput]);
+    const logSpy = getLogSpy();
+
+    // when
+    const result = await Reader.readLine(query);
+
+    // then
+    expect(logSpy).toHaveBeenCalledWith(`${CONFIG.errorPrefix} ${ERROR_MESSAGES.others}`);
+    expect(result).toBe(validInput);
+  });
+
+  test('공백 문자만 있는 입력 시 에러 발생', async () => {
+    // given
+    const query = '입력하세요: ';
+    const validInput = 'valid input';
+    mockQuestions(['   ', validInput]);
+    const logSpy = getLogSpy();
+
+    // when
+    const result = await Reader.readLine(query);
+
+    // then
+    expect(logSpy).toHaveBeenCalledWith(`${CONFIG.errorPrefix} ${ERROR_MESSAGES.others}`);
+    expect(result).toBe(validInput);
+  });
+
+  test('여러 번의 잘못된 입력 후 정상 입력', async () => {
+    // given
+    const query = '입력하세요: ';
+    const validInput = 'valid input';
+    mockQuestions(['', '  ', '', validInput]);
+    const logSpy = getLogSpy();
+
+    // when
+    const result = await Reader.readLine(query);
+
+    // then
+    expect(logSpy).toHaveBeenCalledTimes(3);
+    expect(result).toBe(validInput);
   });
 });

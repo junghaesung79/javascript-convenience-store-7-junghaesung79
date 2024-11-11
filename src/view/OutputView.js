@@ -1,4 +1,4 @@
-import { MESSAGES, RECEIPT_MESSAGES } from '../cosntants/messages.js';
+import { MESSAGES, RECEIPT_MESSAGES } from '../constants/messages.js';
 import Printer from '../io/Printer.js';
 import * as format from '../utils/formatters.js';
 import * as unit from '../utils/units.js';

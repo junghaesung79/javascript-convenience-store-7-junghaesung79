@@ -1,4 +1,4 @@
-import { MESSAGES, orderMessages } from '../cosntants/messages.js';
+import { MESSAGES, orderMessages } from '../constants/messages.js';
 import Reader from '../io/Reader.js';
 import AskHandler from '../services/AskHandler.js';
 import OrderHandler from '../services/OrderHandler.js';
