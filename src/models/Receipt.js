@@ -55,14 +55,18 @@ class Receipt {
   }
 
   #combineGifts(bundles) {
-    return bundles.filter(hasSomething(isValidPeriod)).map((bundle) => {
-      const giftedItems = bundle.filter(hasOwnStatus('gifted'));
-      return {
-        name: giftedItems[0].name,
-        quantity: giftedItems.length,
-        amount: calculateAmount(giftedItems),
-      };
-    });
+    return bundles
+      .filter(hasSomething(isValidPeriod))
+      .map((bundle) => {
+        const giftedItems = bundle.filter(hasOwnStatus('gifted'));
+        if (giftedItems.length === 0) return null;
+        return {
+          name: giftedItems[0].name,
+          quantity: giftedItems.length,
+          amount: calculateAmount(giftedItems),
+        };
+      })
+      .filter(Boolean); // null 값 제거
   }
 
   #calculateTotalQuantity(items) {
