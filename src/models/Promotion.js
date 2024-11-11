@@ -1,4 +1,5 @@
 import { sameNameWith } from '../utils/common.js';
+import { DateTimes } from '@woowacourse/mission-utils';
 
 class Promotion {
   static #promotions = [];
@@ -27,7 +28,7 @@ class Promotion {
       return { ...Promotion.#DEFAULT_PROMOTION };
     }
 
-    const today = new Date();
+    const today = DateTimes.now();
     if (promotion.startDate <= today && promotion.endDate >= today) {
       return promotion;
     }
@@ -57,7 +58,7 @@ class Promotion {
   }
 
   isValidPeriod() {
-    const today = new Date();
+    const today = DateTimes.now();
     return this.#isWithinPromotionPeriod(today);
   }
 
