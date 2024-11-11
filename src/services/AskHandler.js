@@ -11,7 +11,7 @@ class AskHandler {
 
   static #validate(answer) {
     if (!AskHandler.#VALID_ANSWERS.includes(answer)) {
-      throwError(ERROR_MESSAGES.answerYOrN);
+      throwError(ERROR_MESSAGES.others);
     }
   }
 }

@@ -31,11 +31,11 @@ class OrderHandler {
   }
 
   static #validateOrderFormat(orderTokens) {
-    if (this.#rules.isEmpty(orderTokens)) throwError(ERROR_MESSAGES.orders.isEmpty);
+    if (this.#rules.isEmpty(orderTokens)) throwError(ERROR_MESSAGES.invalidFormat);
 
     orderTokens.forEach((order) => {
-      if (this.#rules.hasEmptyOrder(order)) throwError(ERROR_MESSAGES.orders.hasEmptyOrder);
-      if (this.#rules.hasInvalidFormat(order)) throwError(ERROR_MESSAGES.orders.invalidFormat);
+      if (this.#rules.hasEmptyOrder(order)) throwError(ERROR_MESSAGES.invalidFormat);
+      if (this.#rules.hasInvalidFormat(order)) throwError(ERROR_MESSAGES.invalidFormat);
     });
   }
 
@@ -49,7 +49,7 @@ class OrderHandler {
   static #validateOrderValues(orders) {
     orders.forEach((order) => {
       if (isInvalidNumber(order.quantity)) {
-        throwError(ERROR_MESSAGES.orders.invalidNumber);
+        throwError(ERROR_MESSAGES.invalidFormat);
       }
     });
   }
@@ -80,7 +80,7 @@ class OrderHandler {
 
   static #validateProductExists(order, batches) {
     const exists = batches.some(sameNameWith(order.name));
-    if (!exists) throwError(ERROR_MESSAGES.orders.invalidProductName);
+    if (!exists) throwError(ERROR_MESSAGES.invalidProductName);
   }
 
   static #validateStockQuantity(order, batches) {
@@ -88,7 +88,7 @@ class OrderHandler {
       .filter(sameNameWith(order.name))
       .reduce(sumOfProperty('quantity'), 0);
 
-    if (order.quantity > totalStock) throwError(ERROR_MESSAGES.orders.exceedsStock);
+    if (order.quantity > totalStock) throwError(ERROR_MESSAGES.exceedsStock);
   }
 }
 
