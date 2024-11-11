@@ -66,7 +66,7 @@ class Receipt {
           amount: calculateAmount(giftedItems),
         };
       })
-      .filter(Boolean); // null 값 제거
+      .filter(Boolean);
   }
 
   #calculateTotalQuantity(items) {

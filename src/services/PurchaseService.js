@@ -40,8 +40,10 @@ class PurchaseService {
     });
   }
 
-  static applyPromotions(bundles) {
-    return bundles.map(({ category, bundle }) => {
+  static async applyPromotions(bundles) {
+    const resolvedBundles = await Promise.resolve(bundles);
+
+    return resolvedBundles.map(({ category, bundle }) => {
       const { packageSize } = bundle[0].promotion.getPromotionData();
       switch (category) {
         case 'add':
