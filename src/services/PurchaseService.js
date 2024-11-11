@@ -1,3 +1,4 @@
+import Printer from '../io/Printer.js';
 import Shelves from '../models/Shelves.js';
 import { isValidPeriod, sameNameWith } from '../utils/common.js';
 
@@ -80,14 +81,14 @@ class PurchaseService {
     }
 
     const 프로모션상품개수 = bundle.filter(isValidPeriod).length;
-    const 적용세트수 = Math.floor(프로모션상품개수 / packageSize) * packageSize;
+    const 적용상품개수 = Math.floor(프로모션상품개수 / packageSize) * packageSize;
 
     return bundle.map((item, index) => {
-      if (index >= 적용세트수) {
+      if (index >= 적용상품개수) {
         return { ...item, status: 'default' };
       }
 
-      if (index % packageSize === 0) {
+      if (index % packageSize === packageSize - 1) {
         return { ...item, status: 'gifted' };
       }
 

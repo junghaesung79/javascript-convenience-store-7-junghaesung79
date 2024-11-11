@@ -32,7 +32,7 @@ class OutputView {
   static #printItemsBlock(items) {
     const itemsBlock = items.reduce((acc, { name, quantity, amount }, index) => {
       const line = format.receiptMenu({
-        name,
+        name: name,
         quantity: unit.quantity(quantity),
         amount: unit.koreanWon(amount),
       });

@@ -21,7 +21,7 @@ class Receipt {
   #generateReceipt() {
     const items = this.#combineItems(this.#bundles);
     const gifts = this.#combineGifts(this.#bundles);
-    const totalQuantity = this.#calculateTotalQualtity(items);
+    const totalQuantity = this.#calculateTotalQuantity(items);
     const totalAmount = this.#calculateTotalAmount(items);
     const promotionDiscount = this.#calculatePromotionDiscount(gifts);
     const membershipDiscount = this.#calculateMembershipDiscount(
@@ -46,7 +46,7 @@ class Receipt {
   #combineItems(bundles) {
     return bundles.map((bundle) => {
       return {
-        name: bundle.name,
+        name: bundle[0].name,
         quantity: bundle.length,
         amount: calculateAmount(bundle),
       };
@@ -64,7 +64,7 @@ class Receipt {
     });
   }
 
-  #calculateTotalQualtity(items) {
+  #calculateTotalQuantity(items) {
     return items.reduce(sumOfProperty('quantity'), 0);
   }
 
@@ -76,10 +76,10 @@ class Receipt {
     return gifts.reduce(sumOfProperty('amount'), 0);
   }
 
-  #calculateMembershipDiscount(bundles, hasMembership) {
-    if (!hasMembership) return 0;
+  #calculateMembershipDiscount() {
+    if (!this.#hasMembership) return 0;
 
-    const defaultAmount = bundles.reduce((amount, bundle) => {
+    const defaultAmount = this.#bundles.reduce((amount, bundle) => {
       return amount + calculateAmount(bundle.filter(hasOwnStatus('default')));
     }, 0);
     const discountAmount = defaultAmount * 0.3;
