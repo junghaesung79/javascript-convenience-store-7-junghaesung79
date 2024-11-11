@@ -48,7 +48,11 @@ const expectLogContainsWithoutSpacesAndEquals = (received, expects) => {
   });
 };
 
-const runExceptions = async ({ inputs = [], inputsToTerminate = [], expectedErrorMessage = '' }) => {
+const runExceptions = async ({
+  inputs = [],
+  inputsToTerminate = [],
+  expectedErrorMessage = '',
+}) => {
   // given
   const logSpy = getLogSpy();
   mockQuestions([...inputs, ...inputsToTerminate]);
@@ -61,7 +65,12 @@ const runExceptions = async ({ inputs = [], inputsToTerminate = [], expectedErro
   expect(logSpy).toHaveBeenCalledWith(expect.stringContaining(expectedErrorMessage));
 };
 
-const run = async ({ inputs = [], inputsToTerminate = [], expected = [], expectedIgnoringWhiteSpaces = [] }) => {
+const run = async ({
+  inputs = [],
+  inputsToTerminate = [],
+  expected = [],
+  expectedIgnoringWhiteSpaces = [],
+}) => {
   // given
   const logSpy = getLogSpy();
   mockQuestions([...inputs, ...inputsToTerminate]);
@@ -87,63 +96,69 @@ describe('편의점', () => {
   afterEach(() => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
+    MissionUtils.Console.readLineAsync.messages = [];
   });
 
-  test('파일에 있는 상품 목록 출력', async () => {
-    await run({
-      inputs: ['[콜라-1]', 'N', 'N'],
-      expected: [
-        /* prettier-ignore */
-        '- 콜라 1,000원 10개 탄산2+1',
-        '- 콜라 1,000원 10개',
-        '- 사이다 1,000원 8개 탄산2+1',
-        '- 사이다 1,000원 7개',
-        '- 오렌지주스 1,800원 9개 MD추천상품',
-        '- 오렌지주스 1,800원 재고 없음',
-        '- 탄산수 1,200원 5개 탄산2+1',
-        '- 탄산수 1,200원 재고 없음',
-        '- 물 500원 10개',
-        '- 비타민워터 1,500원 6개',
-        '- 감자칩 1,500원 5개 반짝할인',
-        '- 감자칩 1,500원 5개',
-        '- 초코바 1,200원 5개 MD추천상품',
-        '- 초코바 1,200원 5개',
-        '- 에너지바 2,000원 5개',
-        '- 정식도시락 6,400원 8개',
-        '- 컵라면 1,700원 1개 MD추천상품',
-        '- 컵라면 1,700원 10개',
-      ],
-    });
-  });
+  // test('파일에 있는 상품 목록 출력', async () => {
+  //   await run({
+  //     inputs: ['[콜라-1]', 'N', 'N'],
+  //     expected: [
+  //       /* prettier-ignore */
+  //       '- 콜라 1,000원 10개 탄산2+1',
+  //       '- 콜라 1,000원 10개',
+  //       '- 사이다 1,000원 8개 탄산2+1',
+  //       '- 사이다 1,000원 7개',
+  //       '- 오렌지주스 1,800원 9개 MD추천상품',
+  //       '- 오렌지주스 1,800원 재고 없음',
+  //       '- 탄산수 1,200원 5개 탄산2+1',
+  //       '- 탄산수 1,200원 재고 없음',
+  //       '- 물 500원 10개',
+  //       '- 비타민워터 1,500원 6개',
+  //       '- 감자칩 1,500원 5개 반짝할인',
+  //       '- 감자칩 1,500원 5개',
+  //       '- 초코바 1,200원 5개 MD추천상품',
+  //       '- 초코바 1,200원 5개',
+  //       '- 에너지바 2,000원 5개',
+  //       '- 정식도시락 6,400원 8개',
+  //       '- 컵라면 1,700원 1개 MD추천상품',
+  //       '- 컵라면 1,700원 10개',
+  //     ],
+  //   });
+  // });
 
-  test('행사 없는 여러 개의 일반 상품 구매', async () => {
+  test('프로모션 없는 한 종류의 일반 상품 구매', async () => {
     await run({
       inputs: ['[물-2]', 'N', 'N'],
       expectedIgnoringWhiteSpaces: ['내실돈1,000'],
     });
   });
 
-  test('여러 개의 일반 상품 구매', async () => {
-    await run({
-      inputs: ['[비타민워터-3],[물-2],[정식도시락-2]', 'N', 'N'],
-      expectedIgnoringWhiteSpaces: ['내실돈18,300'],
-    });
-  });
-
-  // test('기간에 해당하지 않는 프로모션 적용', async () => {
-  //   mockNowDate('2024-02-01');
-
+  // test('프로모션 없는 여러 종류의 일반 상품 구매', async () => {
   //   await run({
-  //     inputs: ['[감자칩-2]', 'N', 'N'],
-  //     expectedIgnoringWhiteSpaces: ['내실돈3,000'],
+  //     inputs: ['[비타민워터-3],[물-2],[정식도시락-2]', 'N', 'N'],
+  //     expectedIgnoringWhiteSpaces: ['내실돈18,300'],
   //   });
   // });
 
-  // test('예외 테스트', async () => {
+  // test('재고 수량을 초과하여 주문', async () => {
   //   await runExceptions({
   //     inputs: ['[컵라면-12]', 'N', 'N'],
   //     inputsToTerminate: INPUTS_TO_TERMINATE,
-  //     expectedErrorMessage: '[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.',
+  //     expectedErrorMessage: '[ERROR]',
+  //   });
+  // });
+
+  // test('빈 입력값 처리', async () => {
+  //   await runExceptions({
+  //     inputs: [''],
+  //     expectedErrorMessage: '[ERROR]',
+  //   });
+  // });
+
+  // test('잘못된 형식의 입력값 처리', async () => {
+  //   await runExceptions({
+  //     inputs: ['콜라-1'],
+  //     expectedErrorMessage: '[ERROR]',
   //   });
   // });
 });

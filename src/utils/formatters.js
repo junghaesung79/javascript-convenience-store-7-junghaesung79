@@ -23,5 +23,5 @@ export const membershipLine = (amount) => {
 };
 
 export const paymentLine = (amount) => {
-  return `행사할인\t\t${amount}\n`;
+  return `내실돈\t\t${amount}\n`;
 };

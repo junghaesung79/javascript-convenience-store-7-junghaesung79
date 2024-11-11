@@ -87,29 +87,31 @@ class Shelves {
   }
 
   takeItems(items) {
-    const [promotionBatch, defaultBatch] = this.#findBatches(items);
+    const batches = this.#findBatches(items);
     const promotionCount = items.filter(isValidPeriod).length;
 
-    promotionBatch.quantity -= promotionCount;
-    defaultBatch.quantity -= items.length - promotionCount;
+    batches[0].quantity -= promotionCount;
+    if (batches.length > 1) {
+      batches[1].quantity -= items.length - promotionCount;
+    }
   }
 
   turnBackItems(items) {
-    const [promotionBatch, defaultBatch] = this.#findBatches(items);
+    const batches = this.#findBatches(items);
     const promotionCount = items.filter(isValidPeriod).length;
 
-    promotionBatch.quantity += promotionCount;
-    defaultBatch.quantity += items.length - promotionCount;
+    batches[0].quantity += promotionCount;
+    if (batches.length > 1) {
+      batches[1].quantity += items.length - promotionCount;
+    }
   }
 
   #findBatches(items) {
-    const promotionBatchIndex = this.#batches.findIndex((batch) => {
-      return batch.name === items[0].name && isValidPeriod(batch);
+    const targetBatches = this.#batches.filter((batch) => {
+      return batch.name === items[0].name;
     });
 
-    const promotionBatch = this.#batches[promotionBatchIndex];
-    const defaultBatch = this.#batches[promotionBatchIndex + 1];
-    return [promotionBatch, defaultBatch];
+    return [...targetBatches];
   }
 
   getBatches() {
