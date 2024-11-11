@@ -4,20 +4,40 @@ import { AskHandler, OrderHandler } from '../services/index.js';
 import { retryUntilValid } from '../utils/errorHandler.js';
 
 class InputView {
-  static #createInputHandler(message, handler) {
-    return async () => {
-      return retryUntilValid(async () => {
-        const answer = await Reader.readLine(message);
-        return handler(answer);
-      });
-    };
-  }
+  static getOrder = async () => {
+    return await retryUntilValid(async () => {
+      const answer = await Reader.readLine(MESSAGES.getOrder);
+      return OrderHandler.format(answer);
+    });
+  };
 
-  static getOrder = this.#createInputHandler(MESSAGES.getOrder, OrderHandler.format);
+  static askMembership = async () => {
+    return await retryUntilValid(async () => {
+      const answer = await Reader.readLine(MESSAGES.askMembership);
+      return AskHandler.getWhether(answer);
+    });
+  };
 
-  static askMembership = this.#createInputHandler(MESSAGES.askMembership, AskHandler.getWhether);
+  static askToContinue = async () => {
+    return await retryUntilValid(async () => {
+      const answer = await Reader.readLine(MESSAGES.askToContinue);
+      return AskHandler.getWhether(answer);
+    });
+  };
 
-  static askToContinue = this.#createInputHandler(MESSAGES.askToContinue, AskHandler.getWhether);
+  static #askAddItem = async () => {
+    return await retryUntilValid(async () => {
+      const answer = await Reader.readLine(ORDER_MESSAGES.askAddItem);
+      return AskHandler.getWhether(answer);
+    });
+  };
+
+  static #askRemoveItems = async () => {
+    return await retryUntilValid(async () => {
+      const answer = await Reader.readLine(ORDER_MESSAGES.askRemoveItems);
+      return AskHandler.getWhether(answer);
+    });
+  };
 
   static async askPromotions(bundles) {
     return Promise.all(bundles.map(this.#handlePromotionBundle));
@@ -35,16 +55,9 @@ class InputView {
       case 'remove':
         return (await this.#askRemoveItems()) ? 'default' : 'remove';
       default:
-        return category;
+        return await category;
     }
   };
-
-  static #askAddItem = this.#createInputHandler(ORDER_MESSAGES.askAddItem, AskHandler.getWhether);
-
-  static #askRemoveItems = this.#createInputHandler(
-    ORDER_MESSAGES.askRemoveItems,
-    AskHandler.getWhether,
-  );
 }
 
 export default InputView;
